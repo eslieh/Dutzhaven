@@ -1,4 +1,4 @@
-const API_URL = '/api/auth';
+const API_URL = '/http://127.0.0.1:5000//auth';
 
 const register = async (username, email, password, user_type) => {
   try {

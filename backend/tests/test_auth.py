@@ -8,12 +8,12 @@ from werkzeug.security import generate_password_hash
 class AuthTests(unittest.TestCase):
 
     def setUp(self):
-        self.app = create_app('config.TestConfig')
+        self.app = create_app('config.TestConfig')  # Make sure you have a TestConfig
         self.client = self.app.test_client()
         with self.app.app_context():
             db.create_all()
             hashed_password = generate_password_hash('testpassword', method='sha256')
-            self.test_user = User(username='testuser', email='test@example.com', password_hash=hashed_password, user_type='client')
+            self.test_user = User(username='testuser', email='test@example.com', password_hash=hashed_password, user_type='client', full_name='Test User')  # Add full_name
             db.session.add(self.test_user)
             db.session.commit()
 
@@ -24,6 +24,7 @@ class AuthTests(unittest.TestCase):
 
     def test_register(self):
         data = {
+            'fullName': 'New User',  # Add fullName
             'username': 'newuser',
             'email': 'new@example.com',
             'password': 'password123',
@@ -35,12 +36,14 @@ class AuthTests(unittest.TestCase):
         self.assertEqual(response_data['message'], 'User registered successfully')
         self.assertIn('user', response_data)
         self.assertEqual(response_data['user']['username'], 'newuser')
+        self.assertEqual(response_data['user']['full_name'], 'New User')  # Check full_name
 
         with self.app.app_context():
             user = User.query.filter_by(username='newuser').first()
             self.assertIsNotNone(user)
             self.assertEqual(user.email, 'new@example.com')
             self.assertEqual(user.user_type, 'freelancer')
+            self.assertEqual(user.full_name, 'New User') # Check full_name in DB
 
     def test_register_duplicate_username(self):
         data = {
@@ -76,6 +79,7 @@ class AuthTests(unittest.TestCase):
         self.assertIn('access_token', response_data)
         self.assertIn('user', response_data)
         self.assertEqual(response_data['user']['username'], 'testuser')
+        self.assertEqual(response_data['user']['full_name'], 'Test User') # Check fullName
 
     def test_login_invalid_credentials(self):
         data = {
@@ -110,6 +114,7 @@ class AuthTests(unittest.TestCase):
         check_response_data = json.loads(check_response.data)
         self.assertIn('user', check_response_data)
         self.assertEqual(check_response_data['user']['username'], 'testuser')
+        self.assertEqual(check_response_data['user']['full_name'], 'Test User') # Check fullName
 
     def test_check_token_invalid(self):
         check_response = self.client.get('/auth/check', headers={'Authorization': 'Bearer invalidtoken'})

@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 from werkzeug.security import generate_password_hash, check_password_hash
-from ..models import User, db
+from ..models import User, db  # Make sure the path to your User model is correct
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 
 auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
@@ -8,12 +8,13 @@ auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
 @auth_bp.route('/register', methods=['POST'])
 def register():
     data = request.get_json()
+    full_name = data.get('fullName')
     username = data.get('username')
     email = data.get('email')
     password = data.get('password')
     user_type = data.get('user_type')
 
-    if not all([username, email, password, user_type]):
+    if not all([full_name, username, email, password, user_type]):
         return jsonify({'message': 'Missing required fields'}), 400
 
     if User.query.filter_by(username=username).first():
@@ -23,15 +24,15 @@ def register():
         return jsonify({'message': 'Email already exists'}), 400
 
     hashed_password = generate_password_hash(password, method='sha256')
-    new_user = User(username=username, email=email, password_hash=hashed_password, user_type=user_type)
+    new_user = User(full_name=full_name, username=username, email=email, password_hash=hashed_password, user_type=user_type)
 
     try:
         db.session.add(new_user)
         db.session.commit()
 
-        # Return the newly created user data (optional but good practice)
         user_data = {
-            'id': new_user.id,  # Or new_user.user_id if you have that
+            'id': new_user.id,
+            'full_name': new_user.full_name,
             'username': new_user.username,
             'email': new_user.email,
             'user_type': new_user.user_type
@@ -52,10 +53,10 @@ def login():
     user = User.query.filter_by(username=username).first()
 
     if user and check_password_hash(user.password_hash, password):
-        access_token = create_access_token(identity=user.id)  # Or user.user_id
-        # Include user details in the response (recommended)
+        access_token = create_access_token(identity=user.id)
         user_data = {
             'id': user.id,
+            'full_name': user.full_name, # Include full_name here as well
             'username': user.username,
             'email': user.email,
             'user_type': user.user_type
@@ -68,20 +69,21 @@ def login():
 @auth_bp.route('/check', methods=['GET'])
 @jwt_required()
 def check_token():
-    current_user_id = get_jwt_identity()  # Get the user's ID from the token
-    user = User.query.get(current_user_id) # Fetch user details from the database
+    current_user_id = get_jwt_identity()
+    user = User.query.get(current_user_id)
     if user:
        user_data = {
             'id': user.id,
+            'full_name': user.full_name, # And here
             'username': user.username,
             'email': user.email,
             'user_type': user.user_type
         }
        return jsonify({'message': 'Token is valid', 'user': user_data}), 200
-    return jsonify({'message': 'User not found'}), 404  # Or handle as needed
+    return jsonify({'message': 'User not found'}), 404
+
 
 @auth_bp.route('/logout', methods=['POST'])
 @jwt_required()
 def logout():
-    # In a real application, consider adding the token to a blacklist for immediate invalidation.
-    return jsonify({'message': 'Logged out successfully'}), 200  # Frontend should clear the token
+    return jsonify({'message': 'Logged out successfully'}), 200
