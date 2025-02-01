@@ -13,7 +13,7 @@ const Home = () => {
     <div className="home-container">
       <Navbar />  {/* Navbar will not be rendered here due to conditional rendering in App.js */}
       <div className="home-content">
-        <h1>Welcome to TaskHaven</h1>
+        <h1>Welcome to DutzHaven</h1>
         <p>Get things done and earn rewards.</p>
         <div className="cta-buttons">
           <button className="get-started" onClick={handleGetStarted}>
@@ -34,7 +34,7 @@ const Home = () => {
       </div>
 
       <footer>
-        <p>&copy; {new Date().getFullYear()} TaskHaven</p>
+        <p>&copy; {new Date().getFullYear()} DutzHaven</p>
       </footer>
     </div>
   );

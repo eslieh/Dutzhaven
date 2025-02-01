@@ -1,15 +1,17 @@
 import React from 'react';
-import { Link } from 'react-router-dom'; // Import Link
+import { Link } from 'react-router-dom';
 import LoginForm from '../components/LoginForm';
 
 const Login = () => {
   return (
-    <div className="login-page"> {/* Add a class for styling the page */}
+    <div className="login-page">
       <h1>Login</h1>
       <LoginForm />
-      <Link to="/" className="back-to-home"> {/* Add class to Link */}
-        <p>Back Home</p>
-      </Link>
+      <div className="back-to-home"> {/* Wrap the Link in a div for better styling control */}
+        <Link to="/">
+          <p>Home Page</p>
+        </Link>
+      </div>
     </div>
   );
 };

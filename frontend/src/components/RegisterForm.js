@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import authService from '../services/authService'; // Import your auth service
+import authService from '../services/authService';
 
 const RegisterForm = () => {
   const [fullName, setFullName] = useState('');
@@ -9,22 +9,27 @@ const RegisterForm = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false); // Add loading state
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
+    setError(''); // Clear previous errors
 
     if (password !== confirmPassword) {
       setError('Passwords do not match.');
       return;
     }
 
+    setLoading(true); // Set loading to true
+
     try {
-      await authService.register(fullName, username, email, password); // Call the register function
-      navigate('/login'); // Redirect to login after successful registration
+      await authService.register(fullName, username, email, password);
+      navigate('/login');
     } catch (err) {
       setError(err.message || 'Registration failed. Please try again.');
+    } finally {
+      setLoading(false); // Set loading back to false
     }
   };
 
@@ -71,9 +76,11 @@ const RegisterForm = () => {
         onChange={(e) => setConfirmPassword(e.target.value)}
         required
       />
-      <button type="submit">Sign Up</button>
+      <button type="submit" disabled={loading}>
+        {loading ? 'Signing up...' : 'Sign Up'} {/* Show loading indicator */}
+      </button>
       <p className="register-link">
-        Already have an account? <Link to="/login">Login here</Link>
+        Already have an account? <Link to="/login">Login</Link>
       </p>
     </form>
   );

@@ -14,7 +14,8 @@ const getProfile = async () => {
     }
     return await response.json();
   } catch (error) {
-    throw error;
+    console.error("Error fetching profile:", error); // Log the error
+    throw error; // Re-throw for component handling
   }
 };
 
@@ -37,13 +38,14 @@ const updateProfile = async (updatedUser) => {
 
     return await response.json();
   } catch (error) {
-    throw error;
+    console.error("Error updating profile:", error); // Log the error
+    throw error; // Re-throw for component handling
   }
 };
 
-const userService = { // Assign to a variable
+const userService = {
   getProfile,
   updateProfile,
 };
 
-export default userService; // Export the variable
+export default userService;

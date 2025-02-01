@@ -14,7 +14,8 @@ const getMessages = async () => {
         }
         return await response.json();
     } catch (error) {
-        throw error;
+        console.error("Error fetching messages:", error); // Log the error
+        throw error; // Re-throw for component handling
     }
 };
 
@@ -27,7 +28,7 @@ const sendMessage = async (receiverId, messageText) => {
                 'Content-Type': 'application/json',
                 Authorization: `Bearer ${token}`,
             },
-            body: JSON.stringify({ message_text }),
+            body: JSON.stringify({ message_text: messageText }), // Corrected key name
         });
 
         if (!response.ok) {
@@ -37,13 +38,14 @@ const sendMessage = async (receiverId, messageText) => {
 
         return await response.json();
     } catch (error) {
-        throw error;
+        console.error("Error sending message:", error); // Log the error
+        throw error; // Re-throw for component handling
     }
 };
 
-const messageService = { // Assign the object to a variable
+const messageService = {
     getMessages,
     sendMessage,
 };
 
-export default messageService; // Export the variable
+export default messageService;

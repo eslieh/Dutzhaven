@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext'; // Import your auth context
-import userService from '../services/userService';  // Import your user service
+import { useAuth } from '../context/AuthContext';
+import userService from '../services/userService';
 
 const Profile = () => {
-  const { user, logout } = useAuth(); // Get user data and logout function
+  const { user, logout } = useAuth();
   const [profileData, setProfileData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -12,44 +12,49 @@ const Profile = () => {
 
   useEffect(() => {
     const fetchProfile = async () => {
+      setLoading(true); // Set loading to true before fetching
+      setError(null); // Clear any previous errors
+
       try {
-        const data = await userService.getProfile(user._id); // Fetch profile data
+        const data = await userService.getProfile();
         setProfileData(data);
       } catch (err) {
         setError(err.message || 'Error fetching profile.');
+        console.error("Profile fetch error:", err); // Log error for debugging
       } finally {
         setLoading(false);
       }
     };
 
-    if (user) { // Only fetch if user data is available
+    if (user) {
       fetchProfile();
     } else {
-      setLoading(false); // If no user, just set loading to false
+      setLoading(false);
+      // Optional: Redirect to login if user is not authenticated
+      // navigate('/login');
     }
-  }, [user]); // Run when user data changes
+  }, [user, navigate]);
 
   const handleLogout = () => {
     logout();
-    navigate('/login'); // Redirect to login after logout
+    navigate('/login');
   };
 
   if (loading) {
-    return <div>Loading profile...</div>;
+    return <div>Loading profile...</div>; // Or a more visually appealing loading indicator
   }
 
   if (error) {
     return <div style={{ color: 'red' }}>{error}</div>;
   }
 
-  if (!profileData) { // Handle the case where profileData is still null
-    return <div>No profile data available.</div>;
+  if (!profileData) {
+    return <div>No profile data available.</div>; // Or a message like "Profile data not found"
   }
 
   return (
     <div>
       <h1>Profile</h1>
-      {/* Display profile information */}
       <p><strong>Full Name:</strong> {profileData.fullName}</p>
       <p><strong>Username:</strong> {profileData.username}</p>
       <p><strong>Email:</strong> {profileData.email}</p>

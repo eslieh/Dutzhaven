@@ -11,13 +11,14 @@ const register = async (username, email, password, user_type) => {
     });
 
     if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.message || 'Registration failed');
+      const errorData = await response.json(); // Parse error details
+      throw new Error(errorData.message || 'Registration failed'); // Throw error
     }
 
-    return await response.json();
+    return await response.json(); // Return data on success
   } catch (error) {
-    throw error;
+    console.error("Registration error:", error); // Log for debugging
+    throw error; // Re-throw for the component to handle
   }
 };
 
@@ -44,7 +45,8 @@ const login = async (username, password) => {
 
     return data;
   } catch (error) {
-    throw error;
+    console.error("Login error:", error); // Log for debugging
+    throw error; // Re-throw for the component to handle
   }
 };
 
@@ -57,11 +59,11 @@ const isAuthenticated = () => {
   return !!token;
 };
 
-const authService = { // Assign the object to a variable
+const authService = {
   register,
   login,
   logout,
   isAuthenticated,
 };
 
-export default authService; // Export the variable
+export default authService;

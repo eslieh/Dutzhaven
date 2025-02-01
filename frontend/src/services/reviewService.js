@@ -17,7 +17,8 @@ const getReviews = async (taskId, userId) => {
 
         return await response.json();
     } catch (error) {
-        throw error;
+        console.error("Error fetching reviews:", error); // Log the error
+        throw error; // Re-throw for component handling
     }
 };
 
@@ -30,7 +31,7 @@ const createReview = async (taskId, rating, reviewText) => {
                 'Content-Type': 'application/json',
                 Authorization: `Bearer ${token}`,
             },
-            body: JSON.stringify({ rating, reviewText }),
+            body: JSON.stringify({ rating, review_text: reviewText }), // Corrected key name
         });
 
         if (!response.ok) {
@@ -41,13 +42,14 @@ const createReview = async (taskId, rating, reviewText) => {
         return await response.json();
 
     } catch (error) {
-        throw error;
+        console.error("Error creating review:", error); // Log the error
+        throw error; // Re-throw for component handling
     }
 };
 
-const reviewService = {  // Assign to a variable
+const reviewService = {
     getReviews,
     createReview,
 };
 
-export default reviewService; // Export the variable
+export default reviewService;

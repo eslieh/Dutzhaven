@@ -1,48 +1,52 @@
-/* App.css - Enhanced Styling */
+/* App.css - Comprehensive Styling */
 
-/* General Styles */
+/* -------------------------------------------------- */
+/* 1. General Styles */
+/* -------------------------------------------------- */
 body {
-  font-family: 'Roboto', sans-serif;
+  font-family: 'Roboto', sans-serif; /* Modern font */
   margin: 0;
   padding: 0;
-  background: linear-gradient(to bottom right, #089aee, #232b31);
-  color: #c7d8ec;
+  background: linear-gradient(to bottom right, #089aee, #232b31); /* Gradient background */
+  color: #c7d8ec; /* Light text color for contrast */
   line-height: 1.6;
-  overflow-x: hidden;
+  overflow-x: hidden; /* Prevent horizontal scroll */
 }
 
 .App {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+  min-height: 100vh; /* Ensure app takes up full viewport height */
 }
 
-/* Navbar */
+/* -------------------------------------------------- */
+/* 2. Navbar */
+/* -------------------------------------------------- */
 nav {
-  background-color: rgba(1, 1, 22, 0.2);
+  background-color: rgba(1, 1, 22, 0.2); /* Semi-transparent dark background */
   color: #c7d8ec;
   padding: 15px 20px;
   display: flex;
-  justify-content: space-between;
+  justify-content: space-between; /* Align logo and links */
   align-items: center;
-  backdrop-filter: blur(5px);
+  backdrop-filter: blur(5px); /* Subtle blur effect */
 }
 
 nav a {
-  color: #021b2c;
+  color: #021b2c; /* Darker link color */
   text-decoration: none;
   margin: 0 15px;
   font-weight: bold;
-  transition: color 0.3s ease, transform 0.2s ease;
+  transition: color 0.3s ease, transform 0.2s ease; /* Smooth transitions */
 }
 
 nav a:hover {
-  color: #112b35;
-  transform: scale(1.05);
+  color: #112b35; /* Even darker on hover */
+  transform: scale(1.05); /* Slight scale on hover */
 }
 
 nav button {
-  background-color: #00afef;
+  background-color: #00afef; /* Bright blue button */
   color: white;
   padding: 10px 20px;
   border: none;
@@ -53,14 +57,16 @@ nav button {
 }
 
 nav button:hover {
-  background-color: #0098d3;
+  background-color: #0098d3; /* Slightly darker blue on hover */
   transform: scale(1.05);
 }
 
-/* Task List and Cards */
+/* -------------------------------------------------- */
+/* 3. Task List and Cards */
+/* -------------------------------------------------- */
 .task-list {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); /* Responsive grid */
   gap: 25px;
   padding: 25px;
 }
@@ -69,41 +75,43 @@ nav button:hover {
   border: none;
   padding: 25px;
   border-radius: 10px;
-  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.1);
-  background-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.1); /* Soft shadow */
+  background-color: rgba(255, 255, 255, 0.1); /* Slightly transparent white background */
   transition: transform 0.2s, box-shadow 0.2s;
   overflow: hidden;
-  backdrop-filter: blur(5px);
+  backdrop-filter: blur(5px); /* Subtle blur effect */
 }
 
 .task-card:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 8px 14px rgba(0, 0, 0, 0.15);
+  transform: translateY(-8px); /* Lift up on hover */
+  box-shadow: 0 8px 14px rgba(0, 0, 0, 0.15); /* More pronounced shadow on hover */
 }
 
 .task-card h3 {
   margin-top: 0;
-  color: #00afef;
+  color: #00afef; /* Bright blue title */
   margin-bottom: 10px;
 }
 
 .task-card p {
   margin-bottom: 15px;
-  color: #ddd;
+  color: #ddd; /* Slightly lighter text for descriptions */
 }
 
 .task-card a {
-  color: #00afef;
+  color: #00afef; /* Bright blue link */
   text-decoration: none;
   transition: color 0.3s ease;
 }
 
 .task-card a:hover {
   text-decoration: underline;
-  color: #0098d3;
+  color: #0098d3; /* Darker blue on hover */
 }
 
-/* Forms (Login, Register) */
+/* -------------------------------------------------- */
+/* 4. Forms (Login, Register) */
+/* -------------------------------------------------- */
 form {
   display: flex;
   flex-direction: column;
@@ -112,9 +120,9 @@ form {
   padding: 30px;
   border: none;
   border-radius: 10px;
-  background-color: rgba(255, 255, 255, 0.08);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
-  backdrop-filter: blur(20px);
+  background-color: rgba(255, 255, 255, 0.08); /* Semi-transparent white background */
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4); /* More prominent shadow */
+  backdrop-filter: blur(20px); /* More pronounced blur */
 }
 
 form label {
@@ -130,7 +138,7 @@ form input[type="email"] {
   margin-bottom: 20px;
   border: none;
   border-radius: 8px;
-  background-color: rgba(255, 255, 255, 0.12);
+  background-color: rgba(255, 255, 255, 0.12); /* Slightly more opaque input background */
   color: #eee;
   transition: all 0.3s ease;
 }
@@ -138,13 +146,13 @@ form input[type="email"] {
 form input[type="text"]:focus,
 form input[type="password"]:focus,
 form input[type="email"]:focus {
-  background-color: rgba(255, 255, 255, 0.2);
+  background-color: rgba(255, 255, 255, 0.2); /* Even more opaque on focus */
   outline: none;
-  box-shadow: 0 0 10px rgba(0, 175, 240, 0.3);
+  box-shadow: 0 0 10px rgba(0, 175, 240, 0.3); /* Blue focus ring */
 }
 
 form button {
-  background-color: #00afef;
+  background-color: #00afef; /* Bright blue button */
   color: white;
   padding: 15px 25px;
   border: none;
@@ -156,40 +164,48 @@ form button {
 }
 
 form button:hover {
-  background-color: #0098d3;
+  background-color: #0098d3; /* Darker blue on hover */
   transform: scale(1.02);
 }
 
-/* Login/Register Link */
-.login-link, .register-link {
-  color: #00afef;
+/* -------------------------------------------------- */
+/* 5. Login/Register Link */
+/* -------------------------------------------------- */
+.login-link,
+.register-link {
+  color: #00afef; /* Bright blue link */
   text-decoration: none;
   margin-top: 20px;
-  display: block;
+  display: block; /* Make it a block element */
   text-align: center;
   font-size: 1.1rem;
-  transition: color 0.3s ease; /* Added transition */
+  transition: color 0.3s ease;
 }
 
-.login-link:hover, .register-link:hover {
+.login-link:hover,
+.register-link:hover {
   text-decoration: underline;
-  color: #0098d3;
+  color: #0098d3; /* Darker blue on hover */
 }
 
-/* Checkbox Styling */
+/* -------------------------------------------------- */
+/* 6. Checkbox Styling */
+/* -------------------------------------------------- */
 input[type="checkbox"] {
-  appearance: none;
+  appearance: none; /* Remove default checkbox appearance */
   width: 20px;
   height: 20px;
-  border: 2px solid #eee;
+  border: 2px solid #eee; /* Light border */
   border-radius: 4px;
   cursor: pointer;
   vertical-align: middle;
   margin-right: 10px;
-  accent-color: #00afef;
+  accent-color: #00afef; /* Blue accent color */
 }
 
-/* Messages */
+/* -------------------------------------------------- */
+/* 7. Messages */
+/* -------------------------------------------------- */
 .message-list {
   padding: 25px;
 }
@@ -198,31 +214,33 @@ input[type="checkbox"] {
   margin-bottom: 15px;
   padding: 18px;
   border-radius: 10px;
-  max-width: 75%;
+  max-width: 75%; /* Limit message width */
   clear: both;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  background-color: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Soft shadow */
+  background-color: rgba(255, 255, 255, 0.08); /* Slightly transparent white */
   backdrop-filter: blur(10px);
 }
 
 .message-sent {
-  background-color: rgba(0, 175, 240, 0.2);
-  float: right;
+  background-color: rgba(0, 175, 240, 0.2); /* Blue for sent messages */
+  float: right; /* Align sent messages to the right */
 }
 
 .message-received {
-  background-color: rgba(255, 255, 255, 0.08);
-  float: left;
+  background-color: rgba(255, 255, 255, 0.08); /* Light for received messages */
+  float: left; /* Align received messages to the left */
 }
 
 .message-timestamp {
   font-size: 0.9rem;
   color: #ddd;
   margin-top: 8px;
-  display: block;
+  display: block; /* Make timestamp appear below message text */
 }
 
-/* Reviews */
+/* -------------------------------------------------- */
+/* 8. Reviews */
+/* -------------------------------------------------- */
 .review-list {
   padding: 25px;
 }
@@ -232,8 +250,8 @@ input[type="checkbox"] {
   padding: 20px;
   margin-bottom: 15px;
   border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  background-color: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Slightly stronger shadow */
+  background-color: rgba(255, 255, 255, 0.08); /* Slightly transparent white */
   backdrop-filter: blur(10px);
 }
 
@@ -242,19 +260,21 @@ input[type="checkbox"] {
   color: #ddd;
 }
 
-/* Home/Login/Register Pages */
+/* -------------------------------------------------- */
+/* 9. Home/Login/Register Pages */
+/* -------------------------------------------------- */
 .home-container {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  background: linear-gradient(to bottom right, #089aee, #232b31);
+  background: linear-gradient(to bottom right, #089aee, #232b31); /* Gradient background */
   color: #c7d8ec;
   padding: 20px;
   text-align: center;
 }
 
 .home-content {
-  flex: 1;
+  flex: 1; /* Allow content to take up available space */
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -290,14 +310,14 @@ input[type="checkbox"] {
 }
 
 .cta-buttons .get-started {
-  background-color: #00afef;
+  background-color: #00afef; /* Blue button */
   color: white;
 }
 
 .cta-buttons .learn-more {
   background-color: transparent;
-  color: #00afef;
-  border: 2px solid #00afef;
+  color: #00afef; /* Blue text */
+  border: 2px solid #00afef; /* Blue border */
 }
 
 .cta-buttons button:hover {
@@ -305,19 +325,19 @@ input[type="checkbox"] {
 }
 
 .cta-buttons .get-started:hover {
-  background-color: #0098d3;
+  background-color: #0098d3; /* Darker blue on hover */
 }
 
 .cta-buttons .learn-more:hover {
-  background-color: rgba(0, 175, 240, 0.1);
-  color: #0098d3;
-  border-color: #0098d3;
+  background-color: rgba(0, 175, 240, 0.1); /* Slightly transparent blue background */
+  color: #0098d3; /* Darker blue text */
+  border-color: #0098d3; /* Darker blue border */
 }
 
 .featured-tasks,
 .testimonials {
   padding: 40px;
-  background-color: rgba(255, 255, 255, 0.05);
+  background-color: rgba(255, 255, 255, 0.05); /* Slightly transparent white */
   border-radius: 10px;
   margin-top: 40px;
   backdrop-filter: blur(10px);
@@ -334,24 +354,27 @@ footer {
   padding: 20px;
   text-align: center;
   color: #c7d8ec;
-  background-color: rgba(24, 7, 7, 0.2);
+  background-color: rgba(24, 7, 7, 0.2); /* Dark background */
   backdrop-filter: blur(5px);
 }
 
+/* -------------------------------------------------- */
+/* 10. Login/Register Pages */
+/* -------------------------------------------------- */
 .login-page,
 .register-page {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: calc(100vh - 60px);
+  min-height: calc(100vh - 60px); /* Subtract navbar height */
   padding: 20px;
-  background: linear-gradient(to bottom right, #089aee, #232b31);
+  background: linear-gradient(to bottom right, #089aee, #232b31); /* Gradient background */
   color: #c7d8ec;
 }
 
 .back-to-home {
-  color: #00afef;
+  color: #00afef; /* Blue link */
   text-decoration: none;
   margin-top: 20px;
   display: block;
@@ -361,18 +384,20 @@ footer {
 
 .back-to-home:hover {
   text-decoration: underline;
-  color: #0098d3;
+  color: #0098d3; /* Darker blue on hover */
 }
 
-/* Media Queries */
+/* -------------------------------------------------- */
+/* 11. Media Queries */
+/* -------------------------------------------------- */
 @media (max-width: 768px) {
   .task-list {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr; /* Single column on smaller screens */
   }
   form {
-    width: 95%;
+    width: 95%; /* Full width on smaller screens */
   }
   .message {
-    max-width: 95%;
+    max-width: 95%; /* Full width for messages on smaller screens */
   }
 }

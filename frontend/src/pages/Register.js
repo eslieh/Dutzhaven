@@ -7,9 +7,11 @@ const Register = () => {
     <div className="register-page">
       <h1>Register</h1>
       <RegisterForm />
-      <Link to="/" className="back-to-home">
-        <p>Back Home</p>
-      </Link>
+      <div className="back-to-home"> {/* Wrap Link in a div */}
+        <Link to="/">
+          <p>Home page</p>
+        </Link>
+      </div>
     </div>
   );
 };
