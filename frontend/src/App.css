@@ -1,38 +1,378 @@
+/* App.css - Enhanced Styling */
+
+/* General Styles */
+body {
+  font-family: 'Roboto', sans-serif;
+  margin: 0;
+  padding: 0;
+  background: linear-gradient(to bottom right, #089aee, #232b31);
+  color: #c7d8ec;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
 .App {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Navbar */
+nav {
+  background-color: rgba(1, 1, 22, 0.2);
+  color: #c7d8ec;
+  padding: 15px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  backdrop-filter: blur(5px);
+}
+
+nav a {
+  color: #021b2c;
+  text-decoration: none;
+  margin: 0 15px;
+  font-weight: bold;
+  transition: color 0.3s ease, transform 0.2s ease;
+}
+
+nav a:hover {
+  color: #112b35;
+  transform: scale(1.05);
+}
+
+nav button {
+  background-color: #00afef;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  font-weight: bold;
+}
+
+nav button:hover {
+  background-color: #0098d3;
+  transform: scale(1.05);
+}
+
+/* Task List and Cards */
+.task-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 25px;
+  padding: 25px;
+}
+
+.task-card {
+  border: none;
+  padding: 25px;
+  border-radius: 10px;
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.1);
+  background-color: rgba(255, 255, 255, 0.1);
+  transition: transform 0.2s, box-shadow 0.2s;
+  overflow: hidden;
+  backdrop-filter: blur(5px);
+}
+
+.task-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 8px 14px rgba(0, 0, 0, 0.15);
+}
+
+.task-card h3 {
+  margin-top: 0;
+  color: #00afef;
+  margin-bottom: 10px;
+}
+
+.task-card p {
+  margin-bottom: 15px;
+  color: #ddd;
+}
+
+.task-card a {
+  color: #00afef;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.task-card a:hover {
+  text-decoration: underline;
+  color: #0098d3;
+}
+
+/* Forms (Login, Register) */
+form {
+  display: flex;
+  flex-direction: column;
+  width: 500px;
+  margin: 50px auto;
+  padding: 30px;
+  border: none;
+  border-radius: 10px;
+  background-color: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(20px);
+}
+
+form label {
+  margin-bottom: 10px;
+  font-weight: 500;
+  color: #eee;
+}
+
+form input[type="text"],
+form input[type="password"],
+form input[type="email"] {
+  padding: 15px;
+  margin-bottom: 20px;
+  border: none;
+  border-radius: 8px;
+  background-color: rgba(255, 255, 255, 0.12);
+  color: #eee;
+  transition: all 0.3s ease;
+}
+
+form input[type="text"]:focus,
+form input[type="password"]:focus,
+form input[type="email"]:focus {
+  background-color: rgba(255, 255, 255, 0.2);
+  outline: none;
+  box-shadow: 0 0 10px rgba(0, 175, 240, 0.3);
+}
+
+form button {
+  background-color: #00afef;
+  color: white;
+  padding: 15px 25px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease, transform 0.2s ease;
+  font-weight: 500;
+  font-size: 1.1rem;
+}
+
+form button:hover {
+  background-color: #0098d3;
+  transform: scale(1.02);
+}
+
+/* Login/Register Link */
+.login-link, .register-link {
+  color: #00afef;
+  text-decoration: none;
+  margin-top: 20px;
+  display: block;
+  text-align: center;
+  font-size: 1.1rem;
+  transition: color 0.3s ease; /* Added transition */
+}
+
+.login-link:hover, .register-link:hover {
+  text-decoration: underline;
+  color: #0098d3;
+}
+
+/* Checkbox Styling */
+input[type="checkbox"] {
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border: 2px solid #eee;
+  border-radius: 4px;
+  cursor: pointer;
+  vertical-align: middle;
+  margin-right: 10px;
+  accent-color: #00afef;
+}
+
+/* Messages */
+.message-list {
+  padding: 25px;
+}
+
+.message {
+  margin-bottom: 15px;
+  padding: 18px;
+  border-radius: 10px;
+  max-width: 75%;
+  clear: both;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  background-color: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(10px);
+}
+
+.message-sent {
+  background-color: rgba(0, 175, 240, 0.2);
+  float: right;
+}
+
+.message-received {
+  background-color: rgba(255, 255, 255, 0.08);
+  float: left;
+}
+
+.message-timestamp {
+  font-size: 0.9rem;
+  color: #ddd;
+  margin-top: 8px;
+  display: block;
+}
+
+/* Reviews */
+.review-list {
+  padding: 25px;
+}
+
+.review {
+  border: none;
+  padding: 20px;
+  margin-bottom: 15px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(10px);
+}
+
+.review p {
+  margin-bottom: 10px;
+  color: #ddd;
+}
+
+/* Home/Login/Register Pages */
+.home-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: linear-gradient(to bottom right, #089aee, #232b31);
+  color: #c7d8ec;
+  padding: 20px;
   text-align: center;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.home-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 50px;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.home-content h1 {
+  font-size: 3rem;
+  margin-bottom: 20px;
+  color: #ffffff;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.home-content p {
+  font-size: 1.2rem;
+  margin-bottom: 30px;
+  line-height: 1.8;
+  max-width: 800px;
+}
+
+.cta-buttons {
+  display: flex;
+  gap: 20px;
+}
+
+.cta-buttons button {
+  padding: 15px 30px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1.1rem;
+  transition: all 0.3s ease, transform 0.2s ease;
+}
+
+.cta-buttons .get-started {
+  background-color: #00afef;
+  color: white;
+}
+
+.cta-buttons .learn-more {
+  background-color: transparent;
+  color: #00afef;
+  border: 2px solid #00afef;
+}
+
+.cta-buttons button:hover {
+  transform: scale(1.05);
+}
+
+.cta-buttons .get-started:hover {
+  background-color: #0098d3;
+}
+
+.cta-buttons .learn-more:hover {
+  background-color: rgba(0, 175, 240, 0.1);
+  color: #0098d3;
+  border-color: #0098d3;
+}
+
+.featured-tasks,
+.testimonials {
+  padding: 40px;
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+  margin-top: 40px;
+  backdrop-filter: blur(10px);
+}
+
+.featured-tasks h2,
+.testimonials h2 {
+  color: #ffffff;
+  margin-bottom: 20px;
+}
+
+footer {
+  margin-top: 40px;
+  padding: 20px;
+  text-align: center;
+  color: #c7d8ec;
+  background-color: rgba(24, 7, 7, 0.2);
+  backdrop-filter: blur(5px);
+}
+
+.login-page,
+.register-page {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  min-height: calc(100vh - 60px);
+  padding: 20px;
+  background: linear-gradient(to bottom right, #089aee, #232b31);
+  color: #c7d8ec;
 }
 
-.App-link {
-  color: #61dafb;
+.back-to-home {
+  color: #00afef;
+  text-decoration: none;
+  margin-top: 20px;
+  display: block;
+  text-align: center;
+  transition: color 0.3s ease;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
+.back-to-home:hover {
+  text-decoration: underline;
+  color: #0098d3;
+}
+
+/* Media Queries */
+@media (max-width: 768px) {
+  .task-list {
+    grid-template-columns: 1fr;
   }
-  to {
-    transform: rotate(360deg);
+  form {
+    width: 95%;
+  }
+  .message {
+    max-width: 95%;
   }
 }
