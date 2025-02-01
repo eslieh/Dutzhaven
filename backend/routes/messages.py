@@ -8,7 +8,7 @@ messages_bp = Blueprint('messages', __name__, url_prefix='/messages')
 @jwt_required()
 def send_message(receiver_id):
     sender_id = get_jwt_identity()
-    receiver = User.query.get_or_404(receiver_id)
+    receiver = User.query.get_or_404(receiver_id)  # Check if receiver exists
 
     data = request.get_json()
     message_text = data.get('message_text')
@@ -20,12 +20,32 @@ def send_message(receiver_id):
     try:
         db.session.add(new_message)
         db.session.commit()
-        return jsonify({'message': 'Message sent successfully'}), 201
+
+        # Return the newly created message data (good practice)
+        message_data = {
+            'id': new_message.id,
+            'sender_id': new_message.sender_id,
+            'receiver_id': new_message.receiver_id,
+            'message_text': new_message.message_text,
+            'timestamp': new_message.timestamp.isoformat() if new_message.timestamp else None,
+            'sender': { # Include sender details (if available)
+                'id': new_message.sender.id,
+                'username': new_message.sender.username,
+                # ... other sender details
+            } if new_message.sender else None,
+            'receiver': { # Include receiver details (if available)
+                'id': new_message.receiver.id,
+                'username': new_message.receiver.username,
+                # ... other receiver details
+            } if new_message.receiver else None,
+        }
+        return jsonify({'message': 'Message sent successfully', 'message': message_data}), 201
+
     except Exception as e:
         db.session.rollback()
         return jsonify({'message': 'Error sending message', 'error': str(e)}), 500
 
-@messages_bp.route('/', methods=['GET'])  # Get all messages for the logged-in user
+@messages_bp.route('/', methods=['GET'])
 @jwt_required()
 def get_messages():
     user_id = get_jwt_identity()
@@ -38,6 +58,16 @@ def get_messages():
             'receiver_id': message.receiver_id,
             'message_text': message.message_text,
             'timestamp': message.timestamp.isoformat() if message.timestamp else None,
+            'sender': { # Include sender details (if available)
+                'id': message.sender.id,
+                'username': message.sender.username,
+                # ... other sender details
+            } if message.sender else None,
+            'receiver': { # Include receiver details (if available)
+                'id': message.receiver.id,
+                'username': message.receiver.username,
+                # ... other receiver details
+            } if message.receiver else None,
         }
         message_list.append(message_data)
     return jsonify(message_list), 200

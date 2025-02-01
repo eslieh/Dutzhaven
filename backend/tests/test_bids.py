@@ -20,11 +20,9 @@ class BidTests(unittest.TestCase):
             self.client_token = create_access_token(identity=self.test_client.id)
             self.freelancer_token = create_access_token(identity=self.test_freelancer.id)
 
-            # Create a test task
             self.test_task = Task(client_id=self.test_client.id, title='Test Task', description='Test', category='Test', budget=100, deadline='2024-12-31')
             db.session.add(self.test_task)
             db.session.commit()
-
 
     def tearDown(self):
         with self.app.app_context():
@@ -34,35 +32,52 @@ class BidTests(unittest.TestCase):
     def test_create_bid(self):
         data = {
             'proposal_text': 'Test Proposal',
-            'price': 50.00
+            'price':50.00
         }
         response = self.client.post(f'/bids/create/{self.test_task.id}', json=data, headers={'Authorization': f'Bearer {self.freelancer_token}'})
         self.assertEqual(response.status_code, 201)
         response_data = json.loads(response.data)
         self.assertEqual(response_data['message'], 'Bid submitted successfully')
+        self.assertIn('bid_id', response_data)
 
-        with self.app.app_context():  # Check if the bid is in the database
+        with self.app.app_context():
             bid = Bid.query.filter_by(task_id=self.test_task.id, freelancer_id=self.test_freelancer.id).first()
             self.assertIsNotNone(bid)
             self.assertEqual(bid.price, 50.00)
 
-    def test_create_bid_existing_bid(self): # Test creating a bid when one already exists
+    def test_create_bid_existing_bid(self):
         data = {
             'proposal_text': 'Test Proposal',
             'price': 50.00
         }
         response = self.client.post(f'/bids/create/{self.test_task.id}', json=data, headers={'Authorization': f'Bearer {self.freelancer_token}'})
-        self.assertEqual(response.status_code, 201) # First bid should be successful
+        self.assertEqual(response.status_code, 201)
 
-        # Try creating another bid for the same task by the same freelancer
         response2 = self.client.post(f'/bids/create/{self.test_task.id}', json=data, headers={'Authorization': f'Bearer {self.freelancer_token}'})
         self.assertEqual(response2.status_code, 400)
         response_data2 = json.loads(response2.data)
         self.assertEqual(response_data2['message'], 'You have already submitted a bid for this task')
 
+    def test_create_bid_missing_fields(self):
+        data = {
+            'proposal_text': 'Test Proposal',
+        }
+        response = self.client.post(f'/bids/create/{self.test_task.id}', json=data, headers={'Authorization': f'Bearer {self.freelancer_token}'})
+        self.assertEqual(response.status_code, 400)
+        response_data = json.loads(response.data)
+        self.assertEqual(response_data['message'], 'Missing required fields')
+
+    def test_create_bid_invalid_price(self):
+        data = {
+            'proposal_text': 'Test Proposal',
+            'price': 'abc'
+        }
+        response = self.client.post(f'/bids/create/{self.test_task.id}', json=data, headers={'Authorization': f'Bearer {self.freelancer_token}'})
+        self.assertEqual(response.status_code, 400)
+        response_data = json.loads(response.data)
+        self.assertEqual(response_data['message'], 'Price must be a number')
 
     def test_get_bids_for_task(self):
-        # First, create a bid (as in test_create_bid)
         data = {
             'proposal_text': 'Test Proposal',
             'price': 50.00
@@ -73,17 +88,16 @@ class BidTests(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         response_data = json.loads(response.data)
         self.assertIsInstance(response_data, list)
-        self.assertEqual(len(response_data), 1) # Check if one bid was returned
-        self.assertEqual(response_data[0]['price'], 50.00) # Check bid price
+        self.assertEqual(len(response_data), 1)
+        self.assertEqual(response_data[0]['price'], 50.00)
+        self.assertIn('freelancer', response_data[0])
 
     def test_update_bid(self):
-        # ... (Create a bid first)
         data = {
             'proposal_text': 'Test Proposal',
             'price': 50.00
         }
         self.client.post(f'/bids/create/{self.test_task.id}', json=data, headers={'Authorization': f'Bearer {self.freelancer_token}'})
-
 
         updated_data = {
             'proposal_text': 'Updated Proposal',
@@ -96,10 +110,28 @@ class BidTests(unittest.TestCase):
 
         with self.app.app_context():
             updated_bid = Bid.query.get(bid.id)
-            self.assertEqual(updated_bid.price, 75.00) # Check if price updated
+            self.assertEqual(updated_bid.price, 75.00)
+
+    def test_update_bid_unauthorized(self):
+        data = {
+            'proposal_text': 'Test Proposal',
+            'price': 50.00
+        }
+        self.client.post(f'/bids/create/{self.test_task.id}', json=data, headers={'Authorization': f'Bearer {self.freelancer_token}'})
+        bid = Bid.query.filter_by(task_id=self.test_task.id, freelancer_id=self.test_freelancer.id).first()
+        response = self.client.put(f'/bids/{bid.id}', json=data, headers={'Authorization': f'Bearer {self.client_token}'})
+        self.assertEqual(response.status_code, 403)
+        response_data = json.loads(response.data)
+        self.assertEqual(response_data['message'], 'You are not authorized to update this bid')
+
+    def test_update_bid_missing_fields(self):
+        bid = Bid.query.filter_by(task_id=self.test_task.id, freelancer_id=self.test_freelancer.id).first()
+        response = self.client.put(f'/bids/{bid.id}', json={}, headers={'Authorization': f'Bearer {self.freelancer_token}'})
+        self.assertEqual(response.status_code, 400)
+        response_data = json.loads(response.data)
+        self.assertEqual(response_data['message'], 'No fields to update')
 
     def test_delete_bid(self):
-        # ... (Create a bid first)
         data = {
             'proposal_text': 'Test Proposal',
             'price': 50.00
@@ -112,4 +144,16 @@ class BidTests(unittest.TestCase):
 
         with self.app.app_context():
             deleted_bid = Bid.query.get(bid.id)
-            self.assertIsNone(deleted_bid) # Check if bid deleted
+            self.assertIsNone(deleted_bid)
+
+    def test_delete_bid_unauthorized(self):
+        data = {
+            'proposal_text': 'Test Proposal',
+            'price': 50.00
+        }
+        self.client.post(f'/bids/create/{self.test_task.id}', json=data, headers={'Authorization': f'Bearer {self.freelancer_token}'})
+        bid = Bid.query.filter_by(task_id=self.test_task.id, freelancer_id=self.test_freelancer.id).first()
+        response = self.client.delete(f'/bids/{bid.id}', headers={'Authorization': f'Bearer {self.client_token}'})
+        self.assertEqual(response.status_code, 403)
+        response_data = json.loads(response.data)
+        self.assertEqual(response_data['message'], 'You are not authorized to delete this bid')

@@ -28,6 +28,8 @@ class UserTests(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         response_data = json.loads(response.data)
         self.assertEqual(response_data['username'], 'testuser')
+        self.assertEqual(response_data['email'], 'test@example.com')
+        self.assertEqual(response_data['user_type'], 'client')
 
     def test_get_user(self):
         hashed_password = generate_password_hash('anotherpassword', method='sha256')
@@ -40,6 +42,8 @@ class UserTests(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         response_data = json.loads(response.data)
         self.assertEqual(response_data['username'], 'anotheruser')
+        self.assertEqual(response_data['user_type'], 'freelancer')
+        self.assertEqual(response_data['email'], 'another@example.com')
 
     def test_update_profile(self):
         updated_data = {'bio': 'Updated bio', 'contact_info': 'Updated contact info'}
@@ -48,25 +52,22 @@ class UserTests(unittest.TestCase):
         response_data = json.loads(response.data)
         self.assertEqual(response_data['message'], 'Profile updated successfully')
 
-        with self.app.app_context():  # Check if the profile is updated in the database
+        with self.app.app_context():
             user = User.query.get(self.test_user.id)
             self.assertEqual(user.bio, 'Updated bio')
             self.assertEqual(user.contact_info, 'Updated contact info')
 
     def test_update_profile_missing_data(self):
-        # Test updating with only one field
         updated_data = {'bio': 'Updated bio'}
         response = self.client.put('/users/profile', json=updated_data, headers={'Authorization': f'Bearer {self.token}'})
         self.assertEqual(response.status_code, 200)
 
         with self.app.app_context():
             user = User.query.get(self.test_user.id)
-            self.assertEqual(user.bio, 'Updated bio')  # Bio should be updated
-            # Contact info should not be changed
+            self.assertEqual(user.bio, 'Updated bio')
             self.assertEqual(user.contact_info, self.test_user.contact_info)
 
     def test_update_profile_unauthorized(self):
-        # Try to update another user's profile (should not be allowed)
         hashed_password = generate_password_hash('anotherpassword', method='sha256')
         another_user = User(username='anotheruser', email='another@example.com', password_hash=hashed_password, user_type='freelancer')
         with self.app.app_context():
@@ -75,8 +76,22 @@ class UserTests(unittest.TestCase):
 
         updated_data = {'bio': 'Trying to update another user bio'}
         response = self.client.put(f'/users/{another_user.id}/profile', json=updated_data, headers={'Authorization': f'Bearer {self.token}'})
-        self.assertEqual(response.status_code, 404) # Or 403 if you handle it differently
+        self.assertEqual(response.status_code, 403)
 
-        with self.app.app_context(): # Ensure the other user's bio was not changed
+        with self.app.app_context():
             retrieved_user = User.query.get(another_user.id)
-            self.assertNotEqual(retrieved_user.bio, 'Trying to update another user bio') # Or assertEqual to original value
+            self.assertNotEqual(retrieved_user.bio, 'Trying to update another user bio')
+
+    def test_update_profile_invalid_data(self):
+        updated_data = {'email': 'invalid-email'}
+        response = self.client.put('/users/profile', json=updated_data, headers={'Authorization': f'Bearer {self.token}'})
+        self.assertEqual(response.status_code, 400)
+        response_data = json.loads(response.data)
+        self.assertIn("Invalid", response_data['message'])
+
+    def test_get_profile_not_found(self):
+        invalid_token = create_access_token(identity=999)
+        response = self.client.get('/users/profile', headers={'Authorization': f'Bearer {invalid_token}'})
+        self.assertEqual(response.status_code, 404)
+        response_data = json.loads(response.data)
+        self.assertEqual(response_data['message'], 'User not found')

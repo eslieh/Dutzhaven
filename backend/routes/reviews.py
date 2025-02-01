@@ -17,7 +17,9 @@ def create_review(task_id):
     if not all([rating, review_text]):
         return jsonify({'message': 'Missing required fields'}), 400
 
-    # Check if a review for this task by this reviewer already exists
+    if not isinstance(rating, int) or not 1 <= rating <= 5: # Validate rating
+      return jsonify({'message': 'Rating must be an integer between 1 and 5'}), 400
+
     existing_review = Review.query.filter_by(task_id=task_id, reviewer_id=reviewer_id).first()
     if existing_review:
       return jsonify({'message': 'You have already reviewed this task'}), 400
@@ -26,12 +28,29 @@ def create_review(task_id):
     try:
         db.session.add(new_review)
         db.session.commit()
-        return jsonify({'message': 'Review submitted successfully'}), 201
+
+        review_data = { # Return review data on successful creation
+            'id': new_review.id,
+            'task_id': new_review.task_id,
+            'reviewer_id': new_review.reviewer_id,
+            'reviewee_id': new_review.reviewee_id,
+            'rating': new_review.rating,
+            'review_text': new_review.review_text,
+            'timestamp': new_review.timestamp.isoformat() if new_review.timestamp else None,
+            'reviewer': { # Include reviewer details
+                'id': new_review.reviewer.id,
+                'username': new_review.reviewer.username,
+                # ... other reviewer details
+            } if new_review.reviewer else None,
+        }
+
+        return jsonify({'message': 'Review submitted successfully', 'review': review_data}), 201
+
     except Exception as e:
         db.session.rollback()
         return jsonify({'message': 'Error submitting review', 'error': str(e)}), 500
 
-@reviews_bp.route('/task/<int:task_id>', methods=['GET'])  # Get reviews for a task
+@reviews_bp.route('/task/<int:task_id>', methods=['GET'])
 def get_reviews_for_task(task_id):
     reviews = Review.query.filter_by(task_id=task_id).all()
     review_list = []
@@ -44,11 +63,16 @@ def get_reviews_for_task(task_id):
             'rating': review.rating,
             'review_text': review.review_text,
             'timestamp': review.timestamp.isoformat() if review.timestamp else None,
+            'reviewer': { # Include reviewer details
+                'id': review.reviewer.id,
+                'username': review.reviewer.username,
+                # ... other reviewer details
+            } if review.reviewer else None,
         }
         review_list.append(review_data)
     return jsonify(review_list), 200
 
-@reviews_bp.route('/user/<int:user_id>', methods=['GET']) # Get reviews for a user (as reviewee)
+@reviews_bp.route('/user/<int:user_id>', methods=['GET'])
 def get_reviews_for_user(user_id):
     reviews = Review.query.filter_by(reviewee_id=user_id).all()
     review_list = []
@@ -61,6 +85,11 @@ def get_reviews_for_user(user_id):
             'rating': review.rating,
             'review_text': review.review_text,
             'timestamp': review.timestamp.isoformat() if review.timestamp else None,
+            'reviewer': { # Include reviewer details
+                'id': review.reviewer.id,
+                'username': review.reviewer.username,
+                # ... other reviewer details
+            } if review.reviewer else None,
         }
         review_list.append(review_data)
     return jsonify(review_list), 200
