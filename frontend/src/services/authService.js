@@ -1,13 +1,15 @@
-const API_URL = '/http://127.0.0.1:5000//auth';
+const API_URL = '/http://127.0.0.1:5000/auth';
 
-const register = async (username, email, password, user_type) => {
+const register = async (fullName, username, email, password) => {
   try {
+    const user_type = "client";
+    const full_name = fullName;
     const response = await fetch(`${API_URL}/register`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ username, email, password, user_type }),
+      body: JSON.stringify({ full_name,username, email, password, user_type }),
     });
 
     if (!response.ok) {
