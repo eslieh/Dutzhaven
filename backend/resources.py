@@ -1,12 +1,21 @@
+
 from flask import Flask, request, jsonify
 from flask_restful import Api, Resource
 from models import db, User, Task, Bid
 from config import Config
+from flask_cors import CORS  # Import CORS
 
 app = Flask(__name__)
 app.config.from_object(Config)
 db.init_app(app)
 api = Api(app)
+
+# Enable CORS for all routes (this will allow requests from any origin)
+CORS(app)
+
+# If you want to restrict to specific origins, you can do this instead:
+# CORS(app, resources={r"/api/*": {"origins": "https://yourdomain.com"}})
+
 # Auth API
 class AuthResource(Resource):
     def post(self, action):
@@ -26,8 +35,8 @@ class AuthResource(Resource):
         elif action == "login":
             user = User.query.filter_by(username=data['username']).first()
             if user and user.password_hash == data['password']:
-                access_token = create_access_token(identity=user.id)
-                return {"access_token": access_token}, 200
+                # access_token = create_access_token(identity=user.id)
+                return {"user_id": user.id}, 200
             return {"message": "Invalid credentials"}, 401
 
 api.add_resource(AuthResource, "/auth/<string:action>")
@@ -100,3 +109,6 @@ class BidResource(Resource):
         return {"message": "Bid created successfully"}, 201
 
 api.add_resource(BidResource, "/bids/<int:bid_id>", "/bids")
+
+if __name__ == "__main__":
+    app.run(debug=True)
